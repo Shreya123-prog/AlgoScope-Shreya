@@ -9,7 +9,7 @@ export const MenuSetAlgoMooreVoting = ({
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider pl-1">
-        Moore's Voting Controls
+        Moore&apos;s Voting Controls
       </h3>
 
       <div className="space-y-3">
@@ -24,7 +24,7 @@ export const MenuSetAlgoMooreVoting = ({
           onClick={onVisualize}
           className="w-full rounded-xl bg-cyan-500 py-3 font-bold text-black transition hover:bg-cyan-400"
         >
-          Visualize Moore's Voting
+          Visualize Moore&apos;s Voting
         </button>
 
         <button

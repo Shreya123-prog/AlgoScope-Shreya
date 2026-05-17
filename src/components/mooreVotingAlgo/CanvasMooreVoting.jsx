@@ -38,9 +38,7 @@ export const CanvasMooreVoting = ({ numbers, speed }) => {
           setCandidate(currentCandidate)
           setCount(currentCount)
 
-          setStatus(
-            `Checking index ${i} (Value: ${num}) | ${actionsMessage}`
-          )
+          setStatus(`Checking index ${i} (Value: ${num}) | ${actionsMessage}`)
         },
         i * (1200 / speed)
       )
@@ -52,7 +50,8 @@ export const CanvasMooreVoting = ({ numbers, speed }) => {
   }, [numbers, speed])
 
   const displayActiveIndex = numbers.length ? activeIndex : -1
-  const displayCandidate = numbers.length && candidate !== null ? candidate : 'None'
+  const displayCandidate =
+    numbers.length && candidate !== null ? candidate : 'None'
   const displayCount = numbers.length ? count : 0
   const displayStatus = numbers.length
     ? status
