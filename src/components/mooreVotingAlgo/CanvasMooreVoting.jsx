@@ -100,9 +100,9 @@ export const CanvasMooreVoting = ({ numbers, speed }) => {
         </div>
       </div>
 
-      <div className="mt-4">
-        <StatusDisplay message={displayStatus} />
-      </div>
+<div className="mt-8 mb-2">
+  <StatusDisplay message={displayStatus} />
+</div>
     </div>
   )
 }
