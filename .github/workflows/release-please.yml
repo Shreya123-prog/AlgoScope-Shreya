@@ -37,13 +37,20 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run changelog rebuild script
+      - name: Install dependencies
+        run: npm install
+
+      - name: Rebuild CHANGELOG.md
         run: node scripts/append-file-tree.js ${{ needs.release-please.outputs.tag_name }}
 
-      - name: Commit and push rebuilt CHANGELOG.md
+      - name: Commit and push updated CHANGELOG.md
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
-          git diff --quiet && git diff --staged --quiet || git commit -m "docs: rebuild CHANGELOG.md with proper ordering and file trees [skip ci]"
-          git push
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "docs: rebuild CHANGELOG.md with proper ordering and file trees [skip ci]"
+            git push
+          fi
