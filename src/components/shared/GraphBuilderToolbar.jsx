@@ -193,6 +193,10 @@ export const GraphBuilderToolbar = ({
 
   const handleDelete = useCallback(() => {
     if (!selectedElement) return
+    const clearedPendingSource =
+      selectedElement.type === 'node' &&
+      selectedElement.id === pendingEdgeSourceId
+
     if (selectedElement.type === 'node') {
       // Also remove all edges connected to this node
       const connectedEdges = edgesRef.current
@@ -207,8 +211,17 @@ export const GraphBuilderToolbar = ({
     } else {
       edgesRef.current.remove(selectedElement.id)
     }
+    if (clearedPendingSource) {
+      setPendingEdgeSourceId(null)
+    }
     setSelectedElement(null)
-  }, [selectedElement, nodesRef, edgesRef, notifyGraphChange])
+  }, [
+    selectedElement,
+    pendingEdgeSourceId,
+    nodesRef,
+    edgesRef,
+    notifyGraphChange,
+  ])
 
   const handleClearAll = useCallback(() => {
     if (!nodesRef.current || !edgesRef.current) return

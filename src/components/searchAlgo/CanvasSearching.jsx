@@ -62,12 +62,23 @@ export const CanvasSearching = ({
   const [status, setStatus] = useState('')
   const [physics, setPhysics] = useState(false)
   const [networkReady, setNetworkReady] = useState(false)
+  const graphVersionRef = useRef(0)
+  const onGraphChangeRef = useRef(onGraphChange)
 
-  // Notify parent of node list
-  const notifyGraphChange = useCallback(() => {
-    if (!nodesRef.current || !onGraphChange) return
-    onGraphChange(nodesRef.current.getIds())
+  useEffect(() => {
+    onGraphChangeRef.current = onGraphChange
   }, [onGraphChange])
+
+  // Notify parent of node list (stable callback for vis init effect)
+  const notifyGraphChange = useCallback(() => {
+    if (!nodesRef.current || !onGraphChangeRef.current) return
+    onGraphChangeRef.current(nodesRef.current.getIds())
+  }, [])
+
+  const handleCanvasGraphChange = useCallback((ids) => {
+    graphVersionRef.current += 1
+    onGraphChangeRef.current?.(ids)
+  }, [])
 
   // ── Initialize vis-network ─────────────────────────────────────────────────
   useEffect(() => {
@@ -226,23 +237,29 @@ export const CanvasSearching = ({
     })
 
     const timers = []
+    const runVersion = graphVersionRef.current
+    const isStale = () => runVersion !== graphVersionRef.current
 
     const visit = (id, delay) => {
       const t = setTimeout(() => {
+        if (isStale()) return
         nodes.update({
           id,
           color: { background: '#f43f5e', border: '#ffffff' },
           size: 35,
         })
-        setTimeout(() => {
+        const t2 = setTimeout(() => {
+          if (isStale()) return
           nodes.update({ id, size: 30 })
         }, 200 / speed)
+        timers.push(t2)
       }, delay)
       timers.push(t)
     }
 
     const setStatusAtDelay = (message, delay) => {
       const t = setTimeout(() => {
+        if (isStale()) return
         setStatus(message)
       }, delay)
       timers.push(t)
@@ -250,6 +267,7 @@ export const CanvasSearching = ({
 
     const markCompleted = (completionDelay) => {
       const t = setTimeout(() => {
+        if (isStale()) return
         nodes.get().forEach((n) => {
           if (n.color && n.color.background === '#f43f5e') {
             nodes.update({
@@ -298,8 +316,9 @@ export const CanvasSearching = ({
             )
             const edge = edges.get().find((e) => e.from === node && e.to === n)
             if (edge) {
-              setTimeout(
+              const edgeTimer = setTimeout(
                 () => {
+                  if (isStale()) return
                   edges.update({
                     id: edge.id,
                     color: { color: '#f43f5e' },
@@ -308,6 +327,7 @@ export const CanvasSearching = ({
                 },
                 delay - 200 / speed
               )
+              timers.push(edgeTimer)
             }
           }
         })
@@ -342,8 +362,9 @@ export const CanvasSearching = ({
             hasUnvisitedNeighbors = true
             const edge = edges.get().find((e) => e.from === node && e.to === n)
             if (edge) {
-              setTimeout(
+              const edgeTimer = setTimeout(
                 () => {
+                  if (isStale()) return
                   edges.update({
                     id: edge.id,
                     color: { color: '#f43f5e' },
@@ -352,6 +373,7 @@ export const CanvasSearching = ({
                 },
                 delay - 200 / speed
               )
+              timers.push(edgeTimer)
             }
             dfs(n)
             setStatusAtDelay(`Backtracking from ${n} to node ${node}`, delay)
@@ -407,7 +429,7 @@ export const CanvasSearching = ({
             presetNodes={PRESET_NODES}
             presetEdges={PRESET_EDGES}
             weighted={false}
-            onGraphChange={onGraphChange}
+            onGraphChange={handleCanvasGraphChange}
           />
         )}
 

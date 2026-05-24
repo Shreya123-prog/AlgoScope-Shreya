@@ -46,12 +46,23 @@ export const CanvasShortestPath = ({
   const [status, setStatus] = useState('')
   const [physics, setPhysics] = useState(false)
   const [networkReady, setNetworkReady] = useState(false)
+  const graphVersionRef = useRef(0)
+  const onGraphChangeRef = useRef(onGraphChange)
 
-  // Notify parent of node list
-  const notifyGraphChange = useCallback(() => {
-    if (!nodesRef.current || !onGraphChange) return
-    onGraphChange(nodesRef.current.getIds())
+  useEffect(() => {
+    onGraphChangeRef.current = onGraphChange
   }, [onGraphChange])
+
+  // Notify parent of node list (stable callback for vis init effect)
+  const notifyGraphChange = useCallback(() => {
+    if (!nodesRef.current || !onGraphChangeRef.current) return
+    onGraphChangeRef.current(nodesRef.current.getIds())
+  }, [])
+
+  const handleCanvasGraphChange = useCallback((ids) => {
+    graphVersionRef.current += 1
+    onGraphChangeRef.current?.(ids)
+  }, [])
 
   // ── Initialize vis-network ─────────────────────────────────────────────────
   useEffect(() => {
@@ -202,27 +213,35 @@ export const CanvasShortestPath = ({
     const dst = parseInt(target)
 
     const timers = []
+    const runVersion = graphVersionRef.current
+    const isStale = () => runVersion !== graphVersionRef.current
 
     const visitLaterNode = (id, delay) => {
       const t = setTimeout(() => {
+        if (isStale()) return
         nodes.update({
           id,
           color: { background: '#f43f5e', border: '#ffffff' },
           size: 35,
         })
-        setTimeout(() => {
+        const t2 = setTimeout(() => {
+          if (isStale()) return
           nodes.update({ id, size: 30 })
         }, 300 / speed)
+        timers.push(t2)
       }, delay)
       timers.push(t)
     }
 
     const visitLaterEdge = (edgeId, delay) => {
       const t = setTimeout(() => {
+        if (isStale()) return
         edges.update({ id: edgeId, color: { color: '#10b981' }, width: 6 })
-        setTimeout(() => {
+        const t2 = setTimeout(() => {
+          if (isStale()) return
           edges.update({ id: edgeId, width: 5 })
         }, 200 / speed)
+        timers.push(t2)
       }, delay)
       timers.push(t)
     }
@@ -256,8 +275,9 @@ export const CanvasShortestPath = ({
         }
       })
 
-      setTimeout(
+      const pathDoneTimer = setTimeout(
         () => {
+          if (isStale()) return
           pathNodes.forEach((n) => {
             nodes.update({
               id: n,
@@ -272,6 +292,7 @@ export const CanvasShortestPath = ({
         },
         delay + 500 / speed
       )
+      timers.push(pathDoneTimer)
     }
 
     const runDijkstra = () => {
@@ -406,7 +427,7 @@ export const CanvasShortestPath = ({
             presetNodes={PRESET_NODES}
             presetEdges={PRESET_EDGES}
             weighted={true}
-            onGraphChange={onGraphChange}
+            onGraphChange={handleCanvasGraphChange}
           />
         )}
 
