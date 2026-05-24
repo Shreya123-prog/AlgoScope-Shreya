@@ -148,9 +148,9 @@ export const complexityMap = {
     space: 'O(N)',
   },
   fibonacci: {
-    best: 'O(2^N) / O(N)',
-    average: 'O(2^N) / O(N)',
-    worst: 'O(2^N) / O(N)',
+    best: 'O(2^N)',
+    average: 'O(2^N)',
+    worst: 'O(2^N)',
     space: 'O(N)',
   },
 }
