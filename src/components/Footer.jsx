@@ -181,7 +181,7 @@ const Footer = () => {
       </div>
 
       {/* Box 3: Minimalist Bottom Ribbon & Interactive Complexity Counter */}
-     <div className="mt-10 flex flex-col items-center gap-5 border-t border-slate-800 pt-6">
+      <div className="mt-10 flex flex-col items-center gap-5 border-t border-slate-800 pt-6">
         <div className="flex flex-col items-center gap-2 text-center text-xs text-slate-400">
           <p>
             &copy; {new Date().getFullYear()}{' '}
@@ -191,7 +191,7 @@ const Footer = () => {
           <div className="text-[11px] theme-text-subtle">
             Maintained by{' '}
             <a
-             className="font-semibold text-cyan-400 transition hover:text-cyan-300"
+              className="font-semibold text-cyan-400 transition hover:text-cyan-300"
               href="https://github.com/Bimbok"
               target="_blank"
               rel="noreferrer"
@@ -203,7 +203,7 @@ const Footer = () => {
               target="_blank"
               className="font-semibold text-cyan-400 transition hover:text-cyan-300"
               href="https://github.com/adityapaul26"
-             rel="noreferrer"
+              rel="noreferrer"
             >
               adityapaul26
             </a>
