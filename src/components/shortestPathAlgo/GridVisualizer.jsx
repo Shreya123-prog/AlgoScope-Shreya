@@ -23,7 +23,8 @@ const LEGEND_ITEMS = [
 ]
 
 const getCellClassName = (node) => {
-  return `w-7 h-7 border border-(--theme-border) flex items-center justify-center text-[11px] text-(--theme-text-strong) ${node.isStart
+  return `w-7 h-7 border border-(--theme-border) flex items-center justify-center text-[11px] text-(--theme-text-strong) ${
+    node.isStart
       ? 'bg-green-500'
       : node.isEnd
         ? 'bg-red-500'
@@ -40,7 +41,7 @@ const getCellClassName = (node) => {
               : node.visited
                 ? 'bg-cyan-500'
                 : 'bg-(--theme-surface)'
-    }`
+  }`
 }
 
 const createNode = (row, col) => {
@@ -298,9 +299,9 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
             prev.map((r) =>
               r.map((c) =>
                 c.row === node.row &&
-                  c.col === node.col &&
-                  !c.isStart &&
-                  !c.isEnd
+                c.col === node.col &&
+                !c.isStart &&
+                !c.isEnd
                   ? { ...c, visited: true }
                   : c
               )
@@ -319,9 +320,9 @@ const GridVisualizer = ({ algorithm, runKey, speed }) => {
               prev.map((r) =>
                 r.map((c) =>
                   c.row === node.row &&
-                    c.col === node.col &&
-                    !c.isStart &&
-                    !c.isEnd
+                  c.col === node.col &&
+                  !c.isStart &&
+                  !c.isEnd
                     ? { ...c, path: true }
                     : c
                 )
