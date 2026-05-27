@@ -325,7 +325,6 @@ export default function Visualizer() {
     clearPlayback()
     setSearchParams(newAlgo ? { algo: newAlgo } : {})
   }
-  
 
   return (
     <div className="flex flex-col p-2 sm:p-4 lg:p-5">
@@ -723,12 +722,11 @@ export default function Visualizer() {
                 </div>
               )}
               {selectedAlgorithm === 'merge' && (
-  <RecursiveTree
-    tree={currentStep?.recursionTree}
-    activeNode={currentStep?.activeNode}
-  />
-)}
-
+                <RecursiveTree
+                  tree={currentStep?.recursionTree}
+                  activeNode={currentStep?.activeNode}
+                />
+              )}
             </div>
           </div>
         </div>
