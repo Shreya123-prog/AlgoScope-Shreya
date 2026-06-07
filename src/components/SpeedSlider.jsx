@@ -83,7 +83,14 @@ const SpeedSlider = memo(function SpeedSlider({
           overflow: 'hidden',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: '8px', sm: '12px' }, width: '100%' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: { xs: '8px', sm: '12px' },
+            width: '100%',
+          }}
+        >
           <Box
             component="button"
             onClick={handleDecrease}
